@@ -1,103 +1,308 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Projects</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      /* Page container */
+      :root{
+        --max-width:1100px;
+        --gap:20px;
+        --card-pad:18px;
+      }
+      html,body{
+        height:100%;
+        margin:0;
+      }
+      body{
+        display:flex;
+        justify-content:center; /* center the main column horizontally */
+        background:#f7f7f8;
+        font-family:system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        color:#111;
+        line-height:1.45;
+        padding:30px 16px;
+      }
+
+      .site {
+        max-width:var(--max-width);
+        width:100%;
+      }
+
+      header{
+        text-align:center;
+        margin-bottom:var(--gap);
+      }
+      header h1{
+        margin:.2rem 0;
+        font-size:clamp(1.6rem, 2.8vw, 2.2rem);
+      }
+      header p.lead {
+        margin:0 auto;
+        max-width:900px;
+        color:#333;
+        font-size:0.95rem;
+      }
+
+      /* Project card */
+      .project{
+        background:#fff;
+        border-radius:12px;
+        box-shadow:0 6px 20px rgba(15,15,15,0.06);
+        padding:var(--card-pad);
+        margin:var(--gap) 0;
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+        align-items:center; /* center inline contents */
+      }
+
+      .project h2{
+        margin:0;
+        font-size:1.25rem;
+        text-align:center;
+      }
+      .project h3{
+        margin:0;
+        font-weight:600;
+        color:#555;
+        font-size:0.98rem;
+        text-align:center;
+      }
+      .project p.description{
+        max-width:980px;
+        text-align:center;
+        margin:6px 0 12px 0;
+      }
+
+      /* Media area: by default stacked vertically (video above iframe) */
+      .media{
+        width:100%;
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+        align-items:center;
+        justify-content:center;
+      }
+
+      /* Pair of videos: side-by-side on wide screens */
+      .video-pair{
+        display:flex;
+        gap:12px;
+        justify-content:center;
+        align-items:flex-start;
+        width:100%;
+      }
+
+      /* sizing rules for iframes and videos */
+      iframe, video {
+        border-radius:8px;
+        box-shadow:0 6px 14px rgba(10,10,10,0.06);
+        max-width:100%;
+        height:auto;
+      }
+
+      /* Single wide media (e.g. iframe or single video) */
+      .media > iframe,
+      .media > video {
+        width:80%;
+        max-width:900px;
+        height:600px;
+      }
+
+      /* When two videos are side by side, each uses ~45% width and fixed height */
+      .video-pair video {
+        width:45%;
+        max-width:520px;
+        height:360px;
+      }
+
+      /* Smaller iframes used in some places (like two-column layout originally) —
+         but we ensure vertical stacking now; still keep a sensible size */
+      .small-iframe {
+        width:45%;
+        height:520px;
+      }
+
+      /* Responsive: stack video pair on narrow screens */
+      @media (max-width:900px){
+        .project{
+          padding:14px;
+        }
+        .media > iframe,
+        .media > video {
+          width:95%;
+          height:420px;
+        }
+        .video-pair{
+          flex-direction:column;
+        }
+        .video-pair video{
+          width:100%;
+          height:360px;
+        }
+      }
+
+      @media (max-width:520px){
+        .media > iframe,
+        .media > video {
+          height:300px;
+        }
+        .video-pair video{
+          height:260px;
+        }
+      }
+
+      /* links inside descriptions */
+      .project a{
+        color:#0a66c2;
+        text-decoration:none;
+      }
+      .project a:hover{text-decoration:underline;}
+    </style>
   </head>
   <body>
-    <h1>University Projects</h1>
-    <h4>carried out during my Bachelor's Degree in Applied Computer Science and Artificial Intelligence and Master's Degree in Computer Science (curricula in Artificial Intelligence and Data Science).</h4>
+    <main class="site">
+      <header>
+        <h1>University Projects</h1>
+        <p class="lead">
+          carried out during my Bachelor's Degree in Applied Computer Science and Artificial Intelligence and Master's Degree in Computer Science (curricula in Artificial Intelligence and Data Science).
+        </p>
+      </header>
 
-    <h2>Beyond Edge Deletion: A Comprehensive Approach to Counterfactual Explanation in Graph Neural Networks</h2>
-    <h3>Machine Learning</h3>
-    <p>
-      Graph counterfactual explainer (XAI) that allows for edge additions, deletions and node features perturbations. Extending CF-GNNExplainer (<a href="https://arxiv.org/pdf/2102.03322">Lucic et al.</a>) and improving over state-of-the-art.
-    </p>
-    <p>
-      Currently submitted to <a href="https://openreview.net/forum?id=L4KJT9QpqE">ICLR 2026.</a>
-    </p>
-    <iframe src="Machine_Learning/XPlore.pdf" width="45%" height="600px"></iframe>
+      <!-- Project: Graph counterfactual explainer -->
+      <article class="project">
+        <h2>Beyond Edge Deletion: A Comprehensive Approach to Counterfactual Explanation in Graph Neural Networks</h2>
+        <h3>Machine Learning</h3>
+        <p class="description">
+          Graph counterfactual explainer (XAI) that allows for edge additions, deletions and node features perturbations. Extending CF-GNNExplainer (<a href="https://arxiv.org/pdf/2102.03322">Lucic et al.</a>) and improving over state-of-the-art.
+          Currently submitted to <a href="https://openreview.net/forum?id=L4KJT9QpqE">ICLR 2026</a>.
+        </p>
+        <div class="media">
+          <!-- video(s) + pdf stacked vertically (only pdf here) -->
+          <iframe src="Machine_Learning/XPlore.pdf" title="XPlore paper PDF"></iframe>
+        </div>
+      </article>
 
-    <h2>Wavelet Transform for Frequency-Domain Learning Non-Stationary Time Series Analysis</h2>
-    <h3>Deep Learning and Applied Artificial Intelligence</h3>
-    <p>
-      Time series forecasting: enhance frequency-domain MLPs (<a href="https://arxiv.org/pdf/2311.06184">Yi et al., 2023b</a>) by integrating the Dual-Tree Complex Wavelet Transform on non-stationary datasets.
-    </p>
-    <iframe src="Deep_Learning_and_Artificial_Intelligence/DTCWT_TimeSeries.pdf" width="45%" height="600px"></iframe>
+      <!-- Project: Wavelet Transform for Frequency-Domain Learning -->
+      <article class="project">
+        <h2>Wavelet Transform for Frequency-Domain Learning Non-Stationary Time Series Analysis</h2>
+        <h3>Deep Learning and Applied Artificial Intelligence</h3>
+        <p class="description">
+          Time series forecasting: enhance frequency-domain MLPs (<a href="https://arxiv.org/pdf/2311.06184">Yi et al., 2023b</a>) by integrating the Dual-Tree Complex Wavelet Transform on non-stationary datasets.
+        </p>
+        <div class="media">
+          <iframe src="Deep_Learning_and_Artificial_Intelligence/DTCWT_TimeSeries.pdf" title="DTCWT TimeSeries paper"></iframe>
+        </div>
+      </article>
 
-    <h2>Imitational Learning via Diffusion-based Behavioral Cloning</h2>
-    <h3>Reinforcement Learning</h3>
-    <p>
-      Expert imitation learning for Reinforcement Learning agents using
-      denoising diffusion in
-      <a href="https://gymnasium.farama.org/">Gymnasium</a> environments.
-    </p>
-    <video src="https://matteodesanctis2002.github.io/Uni-projects/Reinforcement_Learning/DiffusionBehavioralCloning.mp4" autoplay loop muted playsinline></video>
+      <!-- Project: Imitational Learning via Diffusion-based Behavioral Cloning -->
+      <article class="project">
+        <h2>Imitational Learning via Diffusion-based Behavioral Cloning</h2>
+        <h3>Reinforcement Learning</h3>
+        <p class="description">
+          Expert imitation learning for Reinforcement Learning agents using denoising diffusion in <a href="https://gymnasium.farama.org/">Gymnasium</a> environments.
+        </p>
+        <div class="media">
+          <!-- single video above -->
+          <video src="Reinforcement_Learning/DiffusionBehavioralCloning.mp4" autoplay loop muted playsinline controls></video>
+        </div>
+      </article>
 
-    <h2>Aligning Minerva LLMs</h2>
-    <h3>Natural Language Processing</h3>
-    <p>
-      Aligning <a href="https://minerva-ai.org/">Minerva</a> to human values with Direct Preference Optimization (DPO) and Kahneman-Tversky Optimization (KTO).
-    </p>
-    <iframe src="Natural_Language_Processing/AligningMinervaLLMs.pdf" width="45%" height="600px"></iframe>
+      <!-- Project: Aligning Minerva LLMs -->
+      <article class="project">
+        <h2>Aligning Minerva LLMs</h2>
+        <h3>Natural Language Processing</h3>
+        <p class="description">
+          Aligning <a href="https://minerva-ai.org/">Minerva</a> to human values with Direct Preference Optimization (DPO) and Kahneman-Tversky Optimization (KTO).
+        </p>
+        <div class="media">
+          <iframe src="Natural_Language_Processing/AligningMinervaLLMs.pdf" title="Aligning Minerva PDF"></iframe>
+        </div>
+      </article>
 
-    <h2>Robotic Navigation</h2>
-    <h3>Computer Vision</h3>
-    <p>
-      LLMs and visual robotic navigation in a <a href="https://cyberbotics.com/">Webots</a> simulated environment. NAO robot was used to navigate based on user textual prompts, planning routes and integrating image question answering and captioning.
-      <video src="Computer_Vision/RoboticNavigation.mp4" autoplay loop muted playsinline></video>
-    </p>
-    
-    <h2>Deploying an Image-Generation Application on AWS Lambda: Performance and Scalability Evaluation</h2>
-    <h3>Cloud Computing</h3>
-    <p>
-      Large-scale deployment of an image-generation diffusion model using <a href="https://aws.amazon.com/lambda/">AWS Lambda</a>, <a href="https://aws.amazon.com/s3/">AWS S3</a>, <a href="https://aws.amazon.com/ecr/">AWS ECR</a>, <a href="https://aws.amazon.com/ec2/">AWS EC2</a>, <a href="https://aws.amazon.com/cloudwatch/">AWS CloudWatch</a>, <a href="https://aws.amazon.com/api-gateway/">AWS API Gateway</a>, <a href="https://www.docker.com/">Docker</a>, <a href="https://locust.io/">Locus</a>.
-      <div style="display:flex; gap:20px; align-items:flex-start;"></div>
-        <video src="Cloud_Computing/ImgGenAWSLambda.mp4" width="45%" autoplay loop muted playsinline></video>
-        <iframe src="Cloud_Computing/ImgGenAWSLambda.pdf" width="45%" height="600px"></iframe>
-    </div>
-    </p>
-    
-    <h2>Verification Guided RL</h2>
-    <h3>Formal Methods for AI-based System Engineering</h3>
-    <p>
-      Formal verification of a Reinforcement Learning agent with <a href="https://spinroot.com/spin/whatispin.html">SPIN</a> to guarantee safe actions execution in <a href="https://gymnasium.farama.org/">Gymnasium</a> environments.
-      <div style="display:flex; gap:20px; align-items:flex-start;"></div>
-        <video src="Formal_Methods_for_Artificial_Intelligence_based_System_Engineering/SPIN_Model_Checking_RL_Agents.mp4" width="45%" autoplay loop muted playsinline></video>
-        <iframe src="Formal_Methods_for_Artificial_Intelligence_based_System_Engineering/SPIN_Report_Model_Checking_RL_Agents.pdf" width="45%" height="600px"></iframe>
-    </div>
-    </p>
+      <!-- Project: Robotic Navigation (video only) -->
+      <article class="project">
+        <h2>Robotic Navigation</h2>
+        <h3>Computer Vision</h3>
+        <p class="description">
+          LLMs and visual robotic navigation in a <a href="https://cyberbotics.com/">Webots</a> simulated environment. NAO robot navigation integrating image question answering and captioning.
+        </p>
+        <div class="media">
+          <video src="Computer_Vision/RoboticNavigation.mp4" autoplay loop muted playsinline controls></video>
+        </div>
+      </article>
 
-    <h2>Poisoning of Neural Networks</h2>
-    <h3>Data and Network Security</h3>
-    <p>
-      Survey on Neural Networks poisoning, backdoor attacks and possible mitigations.
-    </p>
-    <div style="display:flex; gap:20px; align-items:flex-start;">
-        <video src="Data_and_Network_Security/NNPoisoning.mp4" width="45%" autoplay loop muted playsinline></video>
-        <iframe src="Data_and_Network_Security/NNPoisoning.pdf" width="45%" height="600px"></iframe>
-      </div>
+      <!-- Project: Deploying an Image-Generation Application on AWS Lambda -->
+      <article class="project">
+        <h2>Deploying an Image-Generation Application on AWS Lambda: Performance and Scalability Evaluation</h2>
+        <h3>Cloud Computing</h3>
+        <p class="description">
+          Large-scale deployment of an image-generation diffusion model using AWS Lambda, S3, ECR, EC2, CloudWatch, API Gateway, Docker and Locust.
+        </p>
+        <div class="media">
+          <!-- video above pdf (stacked) -->
+          <video src="Cloud_Computing/ImgGenAWSLambda.mp4" autoplay loop muted playsinline controls></video>
+          <iframe src="Cloud_Computing/ImgGenAWSLambda.pdf" title="Image Generation on AWS Lambda PDF"></iframe>
+        </div>
+      </article>
 
-    <h2>AutoMIND: Autonomous Multimodal Intelligent Navigation Dashboard </h2>
-    <h3>Multimodal Interaction</h3>
-    <p>
-      Multimodal vehicle driving dashboard developed in a <a href="https://cyberbotics.com/">Webots</a> simulated environment integrated with a <a href="https://eclipse.dev/sumo/">SUMO</a> interface.
-      <div style="display:flex; gap:20px; align-items:flex-start;">
-        <video src="Multimoda_Interaction/AutoMIND.mp4" width="45%" autoplay loop muted playsinline></video>
-        <iframe src="Multimoda_Interaction/AutoMIND.pdf" width="45%" height="600px"></iframe>
-      </div>
-    </p>
+      <!-- Project: Verification Guided RL -->
+      <article class="project">
+        <h2>Verification Guided RL</h2>
+        <h3>Formal Methods for AI-based System Engineering</h3>
+        <p class="description">
+          Formal verification of a Reinforcement Learning agent with <a href="https://spinroot.com/spin/whatispin.html">SPIN</a> to guarantee safe actions execution in <a href="https://gymnasium.farama.org/">Gymnasium</a> environments.
+        </p>
+        <div class="media">
+          <video src="Formal_Methods_for_Artificial_Intelligence_based_System_Engineering/SPIN_Model_Checking_RL_Agents.mp4" autoplay loop muted playsinline controls></video>
+          <iframe src="Formal_Methods_for_Artificial_Intelligence_based_System_Engineering/SPIN_Report_Model_Checking_RL_Agents.pdf" title="SPIN model checking report"></iframe>
+        </div>
+      </article>
 
-    <h2>Quantum Machine Learning</h2>
-    <h3>Topics in Physics</h3>
-    <p>
-      Seminar on QML seminar based on the <a href="https://arxiv.org/pdf/2311.15444">Quantum Diffusion Model</a> paper by Giacu et al.
-      <div style="display:flex; gap:20px; align-items:flex-start;">
-        <video src="Topics_in_Physics/TiP Quantum Physic.mp4" width="45%" autoplay loop muted playsinline></video>
-        <iframe src="Topics_in_Physics/TiP Quantum Computing.mp4" width="45%" height="600px"></iframe>
-      </div>
-    </p>
-    
+      <!-- Project: Poisoning of Neural Networks -->
+      <article class="project">
+        <h2>Poisoning of Neural Networks</h2>
+        <h3>Data and Network Security</h3>
+        <p class="description">
+          Survey on Neural Networks poisoning, backdoor attacks and possible mitigations.
+        </p>
+        <div class="media">
+          <video src="Data_and_Network_Security/NNPoisoning.mp4" autoplay loop muted playsinline controls></video>
+          <iframe src="Data_and_Network_Security/NNPoisoning.pdf" title="NN Poisoning PDF"></iframe>
+        </div>
+      </article>
 
+      <!-- Project: AutoMIND -->
+      <article class="project">
+        <h2>AutoMIND: Autonomous Multimodal Intelligent Navigation Dashboard</h2>
+        <h3>Multimodal Interaction</h3>
+        <p class="description">
+          Multimodal vehicle driving dashboard developed in a <a href="https://cyberbotics.com/">Webots</a> simulated environment integrated with a <a href="https://eclipse.dev/sumo/">SUMO</a> interface.
+        </p>
+        <div class="media">
+          <video src="Multimoda_Interaction/AutoMIND.mp4" autoplay loop muted playsinline controls></video>
+          <iframe src="Multimoda_Interaction/AutoMIND.pdf" title="AutoMIND PDF"></iframe>
+        </div>
+      </article>
+
+      <!-- Project: Quantum Machine Learning -->
+      <article class="project">
+        <h2>Quantum Machine Learning</h2>
+        <h3>Topics in Physics</h3>
+        <p class="description">
+          Seminar on QML based on the <a href="https://arxiv.org/pdf/2311.15444">Quantum Diffusion Model</a> paper by Giacu et al.
+        </p>
+        <div class="media">
+          <!-- Example with two videos side-by-side on wide screens -->
+          <div class="video-pair" aria-hidden="false">
+            <video src="Topics_in_Physics/TiP Quantum Physic.mp4" autoplay loop muted playsinline controls></video>
+            <video src="Topics_in_Physics/TiP Quantum Computing.mp4" autoplay loop muted playsinline controls></video>
+          </div>
+        </div>
+      </article>
+
+    </main>
   </body>
 </html>
