@@ -1,366 +1,308 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
+    <title>Projects</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Projects — lazy thumbnails & toggles</title>
     <style>
-      :root{--max-width:1100px;--gap:20px;--card-pad:18px}
-      html,body{height:100%;margin:0}
-      body{display:flex;justify-content:center;background:#f7f7f8;font-family:system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#111;line-height:1.45;padding:30px 16px}
-      .site{max-width:var(--max-width);width:100%}
-      header{text-align:center;margin-bottom:var(--gap)}
-      header h1{margin:.2rem 0;font-size:clamp(1.6rem,2.8vw,2.2rem)}
-      header p.lead{margin:0 auto;max-width:900px;color:#333;font-size:0.95rem}
+      /* Page container */
+      :root{
+        --max-width:1100px;
+        --gap:20px;
+        --card-pad:18px;
+      }
+      html,body{
+        height:100%;
+        margin:0;
+      }
+      body{
+        display:flex;
+        justify-content:center; /* center the main column horizontally */
+        background:#f7f7f8;
+        font-family:system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        color:#111;
+        line-height:1.45;
+        padding:30px 16px;
+      }
 
-      .project{background:#fff;border-radius:12px;box-shadow:0 6px 20px rgba(15,15,15,0.06);padding:var(--card-pad);margin:var(--gap) 0;display:flex;flex-direction:column;gap:12px;align-items:center}
-      .project h2{margin:0;font-size:1.25rem;text-align:center}
-      .project h3{margin:0;font-weight:600;color:#555;font-size:0.98rem;text-align:center}
-      .project p.description{max-width:980px;text-align:center;margin:6px 0 12px 0}
+      .site {
+        max-width:var(--max-width);
+        width:100%;
+      }
 
-      .media{width:100%;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center}
-      .video-pair{display:flex;gap:12px;justify-content:center;align-items:flex-start;width:100%}
+      header{
+        text-align:center;
+        margin-bottom:var(--gap);
+      }
+      header h1{
+        margin:.2rem 0;
+        font-size:clamp(1.6rem, 2.8vw, 2.2rem);
+      }
+      header p.lead {
+        margin:0 auto;
+        max-width:900px;
+        color:#333;
+        font-size:0.95rem;
+      }
 
-      iframe, video{border-radius:8px;box-shadow:0 6px 14px rgba(10,10,10,0.06);max-width:100%;height:auto}
-      .media > iframe,.media > video{width:80%;max-width:900px;height:600px}
-      .video-pair video{width:45%;max-width:520px;height:360px}
+      /* Project card */
+      .project{
+        background:#fff;
+        border-radius:12px;
+        box-shadow:0 6px 20px rgba(15,15,15,0.06);
+        padding:var(--card-pad);
+        margin:var(--gap) 0;
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+        align-items:center; /* center inline contents */
+      }
 
-      .thumb-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;width:100%}
-      .thumb{cursor:pointer;border-radius:8px;display:block;max-width:100%;height:auto;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
-      .thumb-wrap{display:flex;flex-direction:column;align-items:center;gap:8px}
-      .thumb .label{font-size:0.85rem;color:#333}
+      .project h2{
+        margin:0;
+        font-size:1.25rem;
+        text-align:center;
+      }
+      .project h3{
+        margin:0;
+        font-weight:600;
+        color:#555;
+        font-size:0.98rem;
+        text-align:center;
+      }
+      .project p.description{
+        max-width:980px;
+        text-align:center;
+        margin:6px 0 12px 0;
+      }
 
-      .embed-wrap{width:100%;display:none;justify-content:center}
-      .embed-wrap.active{display:flex}
-      .controls{display:flex;gap:10px;align-items:center}
-      .btn{background:#0a66c2;border:none;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
-      .btn.ghost{background:#fff;color:#0a66c2;border:1px solid rgba(10,102,194,0.12)}
+      /* Media area: by default stacked vertically (video above iframe) */
+      .media{
+        width:100%;
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+        align-items:center;
+        justify-content:center;
+      }
 
-      /* fallback SVG thumb styling (when no image file provided) */
-      .svg-thumb{width:360px;height:200px;display:inline-flex;align-items:center;justify-content:center;background:#111;color:#fff;border-radius:8px}
-      .svg-thumb svg{width:64px;height:64px;opacity:.95}
+      /* Pair of videos: side-by-side on wide screens */
+      .video-pair{
+        display:flex;
+        gap:12px;
+        justify-content:center;
+        align-items:flex-start;
+        width:100%;
+      }
 
+      /* sizing rules for iframes and videos */
+      iframe, video {
+        border-radius:8px;
+        box-shadow:0 6px 14px rgba(10,10,10,0.06);
+        max-width:100%;
+        height:auto;
+      }
+
+      /* Single wide media (e.g. iframe or single video) */
+      .media > iframe,
+      .media > video {
+        width:80%;
+        max-width:900px;
+        height:600px;
+      }
+
+      /* When two videos are side by side, each uses ~45% width and fixed height */
+      .video-pair video {
+        width:45%;
+        max-width:520px;
+        /* height:360px; */
+      }
+
+      /* Smaller iframes used in some places (like two-column layout originally) —
+         but we ensure vertical stacking now; still keep a sensible size */
+      .small-iframe {
+        width:45%;
+        /* height:520px; */
+      }
+
+      /* Responsive: stack video pair on narrow screens */
       @media (max-width:900px){
-        .media>iframe,.media>video{width:95%;height:420px}
-        .video-pair{flex-direction:column}
-        .video-pair video{width:100%;height:360px}
+        .project{
+          padding:14px;
+        }
+        .media > iframe,
+        .media > video {
+          width:95%;
+          /* height:420px; */
+        }
+        .video-pair{
+          flex-direction:column;
+        }
+        .video-pair video{
+          width:100%;
+          /* height:360px; */
+        }
       }
+
       @media (max-width:520px){
-        .media>iframe,.media>video{height:300px}
-        .video-pair video{height:260px}
+        .media > iframe,
+        .media > video {
+          height:300px;
+        }
+        .video-pair video{
+          height:260px;
+        }
       }
+
+      /* links inside descriptions */
+      .project a{
+        color:#0a66c2;
+        text-decoration:none;
+      }
+      .project a:hover{text-decoration:underline;}
     </style>
   </head>
   <body>
     <main class="site">
       <header>
         <h1>University Projects</h1>
-        <p class="lead">carried out during my Bachelor's Degree in Applied Computer Science and Artificial Intelligence and Master's Degree in Computer Science (curricula in Artificial Intelligence and Data Science).</p>
+        <p class="lead">
+          carried out during my Bachelor's Degree in Applied Computer Science and Artificial Intelligence and Master's Degree in Computer Science (curricula in Artificial Intelligence and Data Science).
+        </p>
       </header>
 
-      <!-- Example project block (repeatable pattern) -->
-
-      <article class="project" id="project-xplore">
+      <!-- Project: Graph counterfactual explainer -->
+      <article class="project">
         <h2>Beyond Edge Deletion: A Comprehensive Approach to Counterfactual Explanation in Graph Neural Networks</h2>
         <h3>Machine Learning</h3>
-        <p class="description">Graph counterfactual explainer (XAI) that allows for edge additions, deletions and node features perturbations. Extending CF-GNNExplainer (<a href="https://arxiv.org/pdf/2102.03322">Lucic et al.</a>) and improving over state-of-the-art. Currently submitted to <a href="https://openreview.net/forum?id=L4KJT9QpqE">ICLR 2026</a>.</p>
-
+        <p class="description">
+          Graph counterfactual explainer (XAI) that allows for edge additions, deletions and node features perturbations. Extending CF-GNNExplainer (<a href="https://arxiv.org/pdf/2102.03322">Lucic et al.</a>) and improving over state-of-the-art.
+          Currently submitted to <a href="https://openreview.net/forum?id=L4KJT9QpqE">ICLR 2026</a>.
+        </p>
         <div class="media">
-          <!-- thumbnail (optional image at same path with .jpg or .png). The code uses data-src for lazy loading. -->
-          <div class="thumb-wrap">
-            <img class="thumb" src="Machine_Learning/XPlore.pdf.jpg" alt="XPlore paper thumbnail" loading="lazy" data-target="xplore-pdf" data-type="pdf" />
-            <div class="controls">
-              <button class="btn ghost" data-action="toggle" data-target="xplore-pdf" data-type="pdf">Open PDF</button>
-            </div>
-          </div>
-
-          <div class="embed-wrap" id="xplore-pdf">
-            <iframe data-src="Machine_Learning/XPlore.pdf" title="XPlore paper" loading="lazy"></iframe>
-          </div>
+          <!-- video(s) + pdf stacked vertically (only pdf here) -->
+          <iframe src="Machine_Learning/XPlore.pdf" title="XPlore paper PDF"></iframe>
         </div>
       </article>
 
-      <!-- Wavelet project -->
-      <article class="project" id="project-dtcwt">
+      <!-- Project: Wavelet Transform for Frequency-Domain Learning -->
+      <article class="project">
         <h2>Wavelet Transform for Frequency-Domain Learning Non-Stationary Time Series Analysis</h2>
         <h3>Deep Learning and Applied Artificial Intelligence</h3>
-        <p class="description">Time series forecasting: enhance frequency-domain MLPs (<a href="https://arxiv.org/pdf/2311.06184">Yi et al., 2023b</a>) by integrating the Dual-Tree Complex Wavelet Transform on non-stationary datasets.</p>
+        <p class="description">
+          Time series forecasting: enhance frequency-domain MLPs (<a href="https://arxiv.org/pdf/2311.06184">Yi et al., 2023b</a>) by integrating the Dual-Tree Complex Wavelet Transform on non-stationary datasets.
+        </p>
         <div class="media">
-          <div class="thumb-wrap">
-            <img class="thumb" src="Deep_Learning_and_Artificial_Intelligence/DTCWT_TimeSeries.pdf.jpg" alt="DTCWT paper thumbnail" loading="lazy" data-target="dtcwt-pdf" data-type="pdf" />
-            <div class="controls">
-              <button class="btn" data-action="toggle" data-target="dtcwt-pdf" data-type="pdf">Open PDF</button>
-            </div>
-          </div>
-          <div class="embed-wrap" id="dtcwt-pdf">
-            <iframe data-src="Deep_Learning_and_Artificial_Intelligence/DTCWT_TimeSeries.pdf" title="DTCWT paper" loading="lazy"></iframe>
-          </div>
+          <iframe src="Deep_Learning_and_Artificial_Intelligence/DTCWT_TimeSeries.pdf" title="DTCWT TimeSeries paper"></iframe>
         </div>
       </article>
 
-      <!-- Imitational Learning (video only) -->
-      <article class="project" id="project-diffbc">
+      <!-- Project: Imitational Learning via Diffusion-based Behavioral Cloning -->
+      <article class="project">
         <h2>Imitational Learning via Diffusion-based Behavioral Cloning</h2>
         <h3>Reinforcement Learning</h3>
-        <p class="description">Expert imitation learning for Reinforcement Learning agents using denoising diffusion in <a href="https://gymnasium.farama.org/">Gymnasium</a> environments.</p>
+        <p class="description">
+          Expert imitation learning for Reinforcement Learning agents using denoising diffusion in <a href="https://gymnasium.farama.org/">Gymnasium</a> environments.
+        </p>
         <div class="media">
-          <div class="thumb-wrap">
-            <img class="thumb" src="Reinforcement_Learning/DiffusionBehavioralCloning.mp4.jpg" alt="DiffusionBehavioralCloning thumbnail" loading="lazy" data-target="diffbc-video" data-type="video" />
-            <div class="controls">
-              <button class="btn" data-action="toggle" data-target="diffbc-video" data-type="video">Play video</button>
-            </div>
-          </div>
-          <div class="embed-wrap" id="diffbc-video" data-src="Reinforcement_Learning/DiffusionBehavioralCloning.mp4"></div>
+          <!-- single video above -->
+          <video src="Reinforcement_Learning/DiffusionBehavioralCloning.mp4" autoplay loop muted playsinline controls></video>
         </div>
       </article>
 
-      <!-- Aligning Minerva (PDF) -->
-      <article class="project" id="project-minerva">
+      <!-- Project: Aligning Minerva LLMs -->
+      <article class="project">
         <h2>Aligning Minerva LLMs</h2>
         <h3>Natural Language Processing</h3>
-        <p class="description">Aligning <a href="https://minerva-ai.org/">Minerva</a> to human values with Direct Preference Optimization (DPO) and Kahneman-Tversky Optimization (KTO).</p>
+        <p class="description">
+          Aligning <a href="https://minerva-ai.org/">Minerva</a> to human values with Direct Preference Optimization (DPO) and Kahneman-Tversky Optimization (KTO).
+        </p>
         <div class="media">
-          <div class="thumb-wrap">
-            <img class="thumb" src="Natural_Language_Processing/AligningMinervaLLMs.pdf.jpg" alt="Aligning Minerva thumbnail" loading="lazy" data-target="minerva-pdf" data-type="pdf" />
-            <div class="controls">
-              <button class="btn" data-action="toggle" data-target="minerva-pdf" data-type="pdf">Open PDF</button>
-            </div>
-          </div>
-          <div class="embed-wrap" id="minerva-pdf">
-            <iframe data-src="Natural_Language_Processing/AligningMinervaLLMs.pdf" title="Aligning Minerva PDF" loading="lazy"></iframe>
-          </div>
+          <iframe src="Natural_Language_Processing/AligningMinervaLLMs.pdf" title="Aligning Minerva PDF"></iframe>
         </div>
       </article>
 
-      <!-- Robotic Navigation (video) -->
-      <article class="project" id="project-robotnav">
+      <!-- Project: Robotic Navigation (video only) -->
+      <article class="project">
         <h2>Robotic Navigation</h2>
         <h3>Computer Vision</h3>
-        <p class="description">LLMs and visual robotic navigation in a <a href="https://cyberbotics.com/">Webots</a> simulated environment. NAO robot navigation integrating image question answering and captioning.</p>
+        <p class="description">
+          LLMs and visual robotic navigation in a <a href="https://cyberbotics.com/">Webots</a> simulated environment. NAO robot navigation integrating image question answering and captioning.
+        </p>
         <div class="media">
-          <div class="thumb-wrap">
-            <img class="thumb" src="Computer_Vision/RoboticNavigation.mp4.jpg" alt="Robotic Navigation thumbnail" loading="lazy" data-target="robotnav-video" data-type="video" />
-            <div class="controls">
-              <button class="btn" data-action="toggle" data-target="robotnav-video" data-type="video">Play video</button>
-            </div>
-          </div>
-          <div class="embed-wrap" id="robotnav-video" data-src="Computer_Vision/RoboticNavigation.mp4"></div>
+          <video src="Computer_Vision/RoboticNavigation.mp4" autoplay loop muted playsinline controls></video>
         </div>
       </article>
 
-      <!-- Cloud computing: video + pdf stacked -->
-      <article class="project" id="project-awsimg">
+      <!-- Project: Deploying an Image-Generation Application on AWS Lambda -->
+      <article class="project">
         <h2>Deploying an Image-Generation Application on AWS Lambda: Performance and Scalability Evaluation</h2>
         <h3>Cloud Computing</h3>
-        <p class="description">Large-scale deployment of an image-generation diffusion model using AWS Lambda, S3, ECR, EC2, CloudWatch, API Gateway, Docker and Locust.</p>
+        <p class="description">
+          Large-scale deployment of an image-generation diffusion model using AWS Lambda, S3, ECR, EC2, CloudWatch, API Gateway, Docker and Locust.
+        </p>
         <div class="media">
-          <div class="thumb-wrap">
-            <img class="thumb" src="Cloud_Computing/ImgGenAWSLambda.mp4.jpg" alt="ImageGen AWS thumbnail" loading="lazy" data-target="aws-video" data-type="video" />
-            <div class="controls">
-              <button class="btn" data-action="toggle" data-target="aws-video" data-type="video">Play video</button>
-              <button class="btn ghost" data-action="toggle" data-target="aws-pdf" data-type="pdf">Open PDF</button>
-            </div>
-          </div>
-
-          <div class="embed-wrap" id="aws-video" data-src="Cloud_Computing/ImgGenAWSLambda.mp4"></div>
-          <div class="embed-wrap" id="aws-pdf"><iframe data-src="Cloud_Computing/ImgGenAWSLambda.pdf" title="AWS ImgGen PDF" loading="lazy"></iframe></div>
+          <!-- video above pdf (stacked) -->
+          <video src="Cloud_Computing/ImgGenAWSLambda.mp4" autoplay loop muted playsinline controls></video>
+          <iframe src="Cloud_Computing/ImgGenAWSLambda.pdf" title="Image Generation on AWS Lambda PDF"></iframe>
         </div>
       </article>
 
-      <!-- Verification Guided RL -->
-      <article class="project" id="project-spin">
+      <!-- Project: Verification Guided RL -->
+      <article class="project">
         <h2>Verification Guided RL</h2>
         <h3>Formal Methods for AI-based System Engineering</h3>
-        <p class="description">Formal verification of a Reinforcement Learning agent with <a href="https://spinroot.com/spin/whatispin.html">SPIN</a> to guarantee safe actions execution in <a href="https://gymnasium.farama.org/">Gymnasium</a> environments.</p>
+        <p class="description">
+          Formal verification of a Reinforcement Learning agent with <a href="https://spinroot.com/spin/whatispin.html">SPIN</a> to guarantee safe actions execution in <a href="https://gymnasium.farama.org/">Gymnasium</a> environments.
+        </p>
         <div class="media">
-          <div class="thumb-wrap">
-            <img class="thumb" src="Formal_Methods_for_Artificial_Intelligence_based_System_Engineering/SPIN_Model_Checking_RL_Agents.mp4.jpg" alt="SPIN video thumbnail" loading="lazy" data-target="spin-video" data-type="video" />
-            <div class="controls">
-              <button class="btn" data-action="toggle" data-target="spin-video" data-type="video">Play video</button>
-              <button class="btn ghost" data-action="toggle" data-target="spin-pdf" data-type="pdf">Open PDF</button>
-            </div>
-          </div>
-          <div class="embed-wrap" id="spin-video" data-src="Formal_Methods_for_Artificial_Intelligence_based_System_Engineering/SPIN_Model_Checking_RL_Agents.mp4"></div>
-          <div class="embed-wrap" id="spin-pdf"><iframe data-src="Formal_Methods_for_Artificial_Intelligence_based_System_Engineering/SPIN_Report_Model_Checking_RL_Agents.pdf" title="SPIN report" loading="lazy"></iframe></div>
+          <video src="Formal_Methods_for_Artificial_Intelligence_based_System_Engineering/SPIN_Model_Checking_RL_Agents.mp4" autoplay loop muted playsinline controls></video>
+          <iframe src="Formal_Methods_for_Artificial_Intelligence_based_System_Engineering/SPIN_Report_Model_Checking_RL_Agents.pdf" title="SPIN model checking report"></iframe>
         </div>
       </article>
 
-      <!-- Poisoning of Neural Networks -->
-      <article class="project" id="project-poison">
+      <!-- Project: Poisoning of Neural Networks -->
+      <article class="project">
         <h2>Poisoning of Neural Networks</h2>
         <h3>Data and Network Security</h3>
-        <p class="description">Survey on Neural Networks poisoning, backdoor attacks and possible mitigations.</p>
+        <p class="description">
+          Survey on Neural Networks poisoning, backdoor attacks and possible mitigations.
+        </p>
         <div class="media">
-          <div class="thumb-wrap">
-            <img class="thumb" src="Data_and_Network_Security/NNPoisoning.mp4.jpg" alt="NN Poisoning thumbnail" loading="lazy" data-target="poison-video" data-type="video" />
-            <div class="controls">
-              <button class="btn" data-action="toggle" data-target="poison-video" data-type="video">Play video</button>
-              <button class="btn ghost" data-action="toggle" data-target="poison-pdf" data-type="pdf">Open PDF</button>
-            </div>
-          </div>
-          <div class="embed-wrap" id="poison-video" data-src="Data_and_Network_Security/NNPoisoning.mp4"></div>
-          <div class="embed-wrap" id="poison-pdf"><iframe data-src="Data_and_Network_Security/NNPoisoning.pdf" title="NN Poisoning PDF" loading="lazy"></iframe></div>
+          <video src="Data_and_Network_Security/NNPoisoning.mp4" autoplay loop muted playsinline controls></video>
+          <iframe src="Data_and_Network_Security/NNPoisoning.pdf" title="NN Poisoning PDF"></iframe>
         </div>
       </article>
 
-      <!-- AutoMIND -->
-      <article class="project" id="project-automind">
+      <!-- Project: AutoMIND -->
+      <article class="project">
         <h2>AutoMIND: Autonomous Multimodal Intelligent Navigation Dashboard</h2>
         <h3>Multimodal Interaction</h3>
-        <p class="description">Multimodal vehicle driving dashboard developed in a <a href="https://cyberbotics.com/">Webots</a> simulated environment integrated with a <a href="https://eclipse.dev/sumo/">SUMO</a> interface.</p>
+        <p class="description">
+          Multimodal vehicle driving dashboard developed in a <a href="https://cyberbotics.com/">Webots</a> simulated environment integrated with a <a href="https://eclipse.dev/sumo/">SUMO</a> interface.
+        </p>
         <div class="media">
-          <div class="thumb-wrap">
-            <img class="thumb" src="Multimoda_Interaction/AutoMIND.mp4.jpg" alt="AutoMIND thumbnail" loading="lazy" data-target="automind-video" data-type="video" />
-            <div class="controls">
-              <button class="btn" data-action="toggle" data-target="automind-video" data-type="video">Play video</button>
-              <button class="btn ghost" data-action="toggle" data-target="automind-pdf" data-type="pdf">Open PDF</button>
-            </div>
-          </div>
-          <div class="embed-wrap" id="automind-video" data-src="Multimoda_Interaction/AutoMIND.mp4"></div>
-          <div class="embed-wrap" id="automind-pdf"><iframe data-src="Multimoda_Interaction/AutoMIND.pdf" title="AutoMIND PDF" loading="lazy"></iframe></div>
+          <video src="Multimoda_Interaction/AutoMIND.mp4" autoplay loop muted playsinline controls></video>
+          <iframe src="Multimoda_Interaction/AutoMIND.pdf" title="AutoMIND PDF"></iframe>
         </div>
       </article>
 
-      <!-- Quantum Machine Learning (two videos side-by-side on wide screens) -->
-      <article class="project" id="project-qml">
+      <!-- Project: Quantum Machine Learning -->
+      <article class="project">
         <h2>Quantum Machine Learning</h2>
         <h3>Topics in Physics</h3>
-        <p class="description">Seminar on QML based on the <a href="https://arxiv.org/pdf/2311.15444">Quantum Diffusion Model</a> paper by Giacu et al.</p>
+        <p class="description">
+          Seminar on QML based on the <a href="https://arxiv.org/pdf/2311.15444">Quantum Diffusion Model</a> paper by Giacu et al.
+        </p>
         <div class="media">
-          <div class="video-pair">
-            <div class="thumb-wrap">
-              <img class="thumb" src="Topics_in_Physics/TiP Quantum Physic.mp4.jpg" alt="TiP Quantum Physic thumbnail" loading="lazy" data-target="qml-video-1" data-type="video" />
-              <div class="controls"><button class="btn" data-action="toggle" data-target="qml-video-1" data-type="video">Play</button></div>
-            </div>
-            <div class="thumb-wrap">
-              <img class="thumb" src="Topics_in_Physics/TiP Quantum Computing.mp4.jpg" alt="TiP Quantum Computing thumbnail" loading="lazy" data-target="qml-video-2" data-type="video" />
-              <div class="controls"><button class="btn" data-action="toggle" data-target="qml-video-2" data-type="video">Play</button></div>
-            </div>
+          <!-- Example with two videos side-by-side on wide screens -->
+          <div class="video-pair" aria-hidden="false">
+            <video src="Topics_in_Physics/TiP Quantum Physic.mp4" autoplay loop muted playsinline controls></video>
+            <video src="Topics_in_Physics/TiP Quantum Computing.mp4" autoplay loop muted playsinline controls></video>
           </div>
-
-          <div class="embed-wrap" id="qml-video-1" data-src="Topics_in_Physics/TiP Quantum Physic.mp4"></div>
-          <div class="embed-wrap" id="qml-video-2" data-src="Topics_in_Physics/TiP Quantum Computing.mp4"></div>
         </div>
       </article>
 
     </main>
-
-    <script>
-      /*
-        Behavior:
-        - Thumbnails are optional image files. If present (eg: video.mp4.jpg or doc.pdf.jpg), they will be shown.
-        - Clicking the thumbnail OR the toggle button loads the real media into the hidden .embed-wrap and shows it.
-        - PDF iframes get their src from data-src only when opened (lazy load).
-        - Videos are created with a single <video> element and a <source> appended when opened; before that the browser won't fetch the video.
-      */
-
-      function createVideoElement(src, title){
-        const video = document.createElement('video');
-        video.setAttribute('controls', '');
-        video.setAttribute('playsinline', '');
-        video.setAttribute('preload', 'none');
-        video.style.maxWidth = '100%';
-        video.title = title || '';
-        const source = document.createElement('source');
-        source.src = src;
-        // try to infer type from extension
-        const ext = src.split('.').pop().toLowerCase();
-        if(ext === 'mp4') source.type = 'video/mp4';
-        if(ext === 'webm') source.type = 'video/webm';
-        video.appendChild(source);
-        return video;
-      }
-
-      function openEmbed(targetId, type){
-        const wrap = document.getElementById(targetId);
-        if(!wrap) return;
-        if(wrap.classList.contains('active')){
-          // hide and stop media
-          wrap.classList.remove('active');
-          // cleanup media to free bandwidth
-          if(type === 'video'){
-            while(wrap.firstChild) wrap.removeChild(wrap.firstChild);
-          } else if(type === 'pdf'){
-            const ifr = wrap.querySelector('iframe');
-            if(ifr) ifr.removeAttribute('src');
-          }
-          return;
-        }
-
-        // show and load
-        if(type === 'pdf'){
-          const ifr = wrap.querySelector('iframe');
-          if(ifr){
-            const src = ifr.getAttribute('data-src');
-            ifr.setAttribute('src', src);
-          } else {
-            // create iframe if not present
-            const newI = document.createElement('iframe');
-            newI.setAttribute('loading','lazy');
-            newI.setAttribute('title','Document');
-            const src = wrap.getAttribute('data-src') || '';
-            if(src) newI.setAttribute('src', src);
-            wrap.appendChild(newI);
-          }
-          wrap.classList.add('active');
-        } else if(type === 'video'){
-          const src = wrap.getAttribute('data-src');
-          if(!src) return;
-          // create video element if not already
-          if(!wrap.querySelector('video')){
-            const v = createVideoElement(src, targetId);
-            v.style.width = '80%';
-            v.style.maxWidth = '900px';
-            v.style.height = '600px';
-            wrap.appendChild(v);
-            // on small screens make it full width
-            function adaptSize(){
-              if(window.innerWidth < 900){ v.style.width = '95%'; v.style.height = '420px'; }
-              else { v.style.width = '80%'; v.style.height = '600px'; }
-            }
-            adaptSize();
-            window.addEventListener('resize', adaptSize);
-          }
-          wrap.classList.add('active');
-        }
-      }
-
-      // attach listeners to thumbnails and buttons
-      document.addEventListener('click', (e)=>{
-        const t = e.target;
-        // thumbnail img
-        if(t.matches('.thumb')){
-          const target = t.getAttribute('data-target');
-          const type = t.getAttribute('data-type');
-          if(target && type) openEmbed(target, type);
-        }
-        // toggle buttons
-        if(t.matches('[data-action="toggle"]')){
-          const target = t.getAttribute('data-target');
-          const type = t.getAttribute('data-type');
-          if(target && type) openEmbed(target, type);
-        }
-      });
-
-      // keyboard accessibility: Enter/Space on .thumb
-      document.addEventListener('keydown', (e)=>{
-        const active = document.activeElement;
-        if((e.key === 'Enter' || e.key === ' ') && active && active.classList && active.classList.contains('thumb')){
-          active.click();
-          e.preventDefault();
-        }
-      });
-
-      // Optional: progressive prefetch on hover (adds a small delay before creating a preconnect link)
-      let prefetchTimer = null;
-      document.addEventListener('pointerenter', (e)=>{
-        const t = e.target;
-        if(!t || !t.matches || !t.matches('.thumb')) return;
-        const dsrc = t.closest('.thumb-wrap')?.querySelector('.thumb')?.getAttribute('data-target');
-        // nothing fancy here — you could implement preload by creating <link rel="preload"> for video but be careful with bandwidth.
-        // leaving as comment for now.
-      }, {passive:true});
-
-    </script>
   </body>
 </html>
