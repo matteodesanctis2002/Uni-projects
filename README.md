@@ -35,4 +35,5 @@ Multimodal vehicle driving dashboard developed in a [Webots](https://cyberbotics
 ## Quantum Machine Learning
 ### Topics in Physics
 Seminar on Quantum Machine Learning: theory, architecture and training pipeline of a Quantum Neural Network. Papers: [Training deep quantum neural networks](https://www.nature.com/articles/s41467-020-14454-2), [Efficient Learning for Deep Quantum Neural Networks](https://arxiv.org/pdf/1902.10445)
-<img src="docs\Topics in Physics\TiP Quantum Computing.gif" alt="demo" width="560" />
+[](docs/Topics_in_Physics/TiP%20Quantum%20Computing.gif)
+[](docs/Topics_in_Physics/TiP%20Quantum%20Physic.gif)
